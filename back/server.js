@@ -1,14 +1,15 @@
 console.log("About to start the server...");
 
-const http = require("node:http");
+const express = require("express");
 
-// Create an HTTP server
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain", blabla: 123 });
-  res.end("okay");
+const app = express();
+
+const port = 3000;
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
-// Now that server is running
-server.listen(1337, "127.0.0.1", () => {
-  console.log("Server started on port 1337");
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
