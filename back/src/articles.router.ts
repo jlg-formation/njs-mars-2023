@@ -1,4 +1,5 @@
 import { json, Router } from "express";
+import { generateId } from "./misc";
 
 const app = Router();
 
@@ -11,7 +12,8 @@ app.get("/", (req, res) => {
 app.use(json());
 
 app.post("/", (req, res) => {
-  const article = req.body;
+  const newArticle = req.body;
+  const article = { ...newArticle, id: generateId() };
   articles.push(article);
   res.status(201).end();
 });
