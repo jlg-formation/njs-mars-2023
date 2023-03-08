@@ -1,11 +1,9 @@
-(() => {
-  const express = require("express");
+import express from "express";
 
-  const app = express.Router();
+const app = express.Router();
 
-  app.get("/date", (req, res) => {
-    res.json({ date: new Date() });
-  });
+app.get("/date", (req, res) => {
+  res.json({ date: new Date() });
+});
 
-  module.exports = app;
-})();
+export const api = app;

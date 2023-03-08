@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "outDir": "dist"
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
   "include": ["src"],
   "exclude": ["node_modules"]
