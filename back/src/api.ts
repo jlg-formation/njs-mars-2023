@@ -1,5 +1,5 @@
 import express from "express";
-import articles from "./articles.router";
+import articles from "./articlesRouter";
 
 const app = express.Router();
 
