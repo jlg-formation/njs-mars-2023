@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "clean": "rimraf dist"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +16,10 @@
   "dependencies": {
     "express": "^4.18.2",
     "serve-index": "^1.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.6",
+    "rimraf": "^4.3.1",
+    "typescript": "^4.9.5"
   }
 }

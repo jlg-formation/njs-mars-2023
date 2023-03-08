@@ -1,11 +1,11 @@
-console.log("About to start the server...");
-
 const express = require("express");
 const serveIndex = require("serve-index");
 
+console.log("About to start the server...");
+
 const app = express();
 
-const port = 3000;
+const port: number = 3000;
 const publicDir = ".";
 
 app.use((req, res, next) => {
