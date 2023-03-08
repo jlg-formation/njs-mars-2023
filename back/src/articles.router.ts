@@ -3,7 +3,7 @@ import { generateId } from "./misc";
 
 const app = Router();
 
-const articles = [];
+let articles = [];
 
 app.get("/", (req, res) => {
   res.json(articles);
@@ -16,6 +16,11 @@ app.post("/", (req, res) => {
   const article = { ...newArticle, id: generateId() };
   articles.push(article);
   res.status(201).end();
+});
+
+app.delete("/", (req, res) => {
+  articles = [];
+  res.status(204).end();
 });
 
 export default app;
