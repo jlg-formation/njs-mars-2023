@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/server.ts",
-    "start:prod": "node dist/server.js",
+    "start:prod": "node --no-warnings --loader ./dist/esm-loader.js dist/server.js",
     "prebuild": "npm run clean",
     "build": "tsc",
     "clean": "rimraf dist"
