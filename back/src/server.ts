@@ -1,21 +1,27 @@
-const express = require("express");
-const serveIndex = require("serve-index");
+(() => {
+  const express = require("express");
+  const serveIndex = require("serve-index");
 
-console.log("About to start the server...");
+  const api = require("./api");
 
-const app = express();
+  console.log("About to start the server...");
 
-const port: number = 3000;
-const publicDir = ".";
+  const app = express();
 
-app.use((req, res, next) => {
-  console.log("req: ", req.url);
-  next();
-});
+  const port: number = 3000;
+  const publicDir = ".";
 
-app.use(express.static(publicDir));
-app.use(serveIndex(publicDir, { icons: true }));
+  app.use((req, res, next) => {
+    console.log("req: ", req.url);
+    next();
+  });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+  app.use("/api", api);
+
+  app.use(express.static(publicDir));
+  app.use(serveIndex(publicDir, { icons: true }));
+
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
+})();
