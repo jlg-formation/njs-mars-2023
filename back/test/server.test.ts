@@ -3,7 +3,7 @@ import { WebServer } from "../src/WebServer";
 
 describe("Server", () => {
   const url = "http://localhost:3333/api/date";
-  test.only("start stop", async () => {
+  test("start stop", async () => {
     const server = new WebServer({ port: 3333 });
     await server.start();
     const resp = await axios.get<object>(url);
