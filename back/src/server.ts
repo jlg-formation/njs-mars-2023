@@ -7,7 +7,7 @@ console.log("About to start the server...");
 
 const app = express();
 
-const port: number = 3000;
+const port = 3000;
 const publicDir = ".";
 
 app.use((req, res, next) => {
