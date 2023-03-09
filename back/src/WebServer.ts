@@ -1,4 +1,5 @@
 import express from "express";
+import { Server } from "http";
 import serveIndex from "serve-index";
 import { api } from "./api";
 
@@ -11,6 +12,7 @@ export class WebServer {
     port: 6666,
   };
   app = express();
+  server: Server | undefined;
 
   constructor(opts?: WebServerOptions) {
     this.options = { ...this.options, ...opts };
@@ -44,10 +46,23 @@ export class WebServer {
       });
 
       server.once("error", callback);
+      this.server = server;
     });
   }
 
   stop() {
-    throw new Error("Method not implemented.");
+    return new Promise<void>((resolve, reject) => {
+      if (this.server === undefined) {
+        resolve();
+        return;
+      }
+      this.server.close((err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    });
   }
 }
