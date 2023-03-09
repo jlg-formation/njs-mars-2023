@@ -1,5 +1,5 @@
 import { json, Router } from "express";
-import { Article, NewArticle } from "./interfaces/article2";
+import { Article, NewArticle } from "./interfaces/article";
 import { generateId } from "./misc";
 import {
   newArticleSchema,
