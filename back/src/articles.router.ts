@@ -40,6 +40,7 @@ app.post("/", (req, res) => {
       return;
     }
   }
+  // eslint-disable-next-line github/array-foreach
   newArticles.forEach((newArticle) => {
     const article = { ...newArticle, id: generateId() };
     articles.set(article.id, article);
