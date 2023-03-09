@@ -1,7 +1,10 @@
 import { json, Router } from "express";
 import { Article, NewArticle } from "./interfaces/Article";
 import { generateId } from "./misc";
-import { newArticleSchema } from "./schemas/article.schema";
+import {
+  newArticleSchema,
+  partialArticleSchema,
+} from "./schemas/article.schema";
 
 const app = Router();
 
@@ -67,6 +70,37 @@ app.delete("/:id", (req, res) => {
     res.status(404).end("not found");
     return;
   }
+  res.status(204).end();
+});
+
+app.put("/:id", (req, res) => {
+  const id = req.params.id;
+  const newArticle: NewArticle = req.body;
+  const result = newArticleSchema.validate(newArticle);
+  if (result.error) {
+    res.status(400).json(result);
+    return;
+  }
+  const article = { ...newArticle, id };
+  articles.set(id, article);
+  res.status(204).end();
+});
+
+app.patch("/:id", (req, res) => {
+  const id = req.params.id;
+  const partialArticle: Partial<NewArticle> = req.body;
+  const result = partialArticleSchema.validate(partialArticle);
+  if (result.error) {
+    res.status(400).json(result);
+    return;
+  }
+  const origArticle = articles.get(id);
+  if (origArticle === undefined) {
+    res.status(404).end();
+    return;
+  }
+  const article = { ...origArticle, ...partialArticle };
+  articles.set(id, article);
   res.status(204).end();
 });
 
