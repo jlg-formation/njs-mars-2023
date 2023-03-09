@@ -1,6 +1,7 @@
 import { json, Router } from "express";
 import { Article, NewArticle } from "./interfaces/Article";
 import { generateId } from "./misc";
+import { newArticleSchema } from "./schemas/article.schema";
 
 const app = Router();
 
@@ -24,9 +25,18 @@ app.get("/:id", (req, res) => {
 app.use(json());
 
 app.post("/", (req, res) => {
+  console.log("req.body: ", req.body);
+
   const newArticles: NewArticle[] =
     req.body instanceof Array ? req.body : [req.body];
 
+  for (const newArticle of newArticles) {
+    const result = newArticleSchema.validate(newArticle);
+    if (result.error) {
+      res.status(400).json(result);
+      return;
+    }
+  }
   newArticles.forEach((newArticle) => {
     const article = { ...newArticle, id: generateId() };
     articles.set(article.id, article);
