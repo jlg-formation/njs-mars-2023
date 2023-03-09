@@ -24,9 +24,13 @@ app.get("/:id", (req, res) => {
 app.use(json());
 
 app.post("/", (req, res) => {
-  const newArticle: NewArticle = req.body;
-  const article = { ...newArticle, id: generateId() };
-  articles.set(article.id, article);
+  const newArticles: NewArticle[] =
+    req.body instanceof Array ? req.body : [req.body];
+
+  newArticles.forEach((newArticle) => {
+    const article = { ...newArticle, id: generateId() };
+    articles.set(article.id, article);
+  });
   res.status(201).end();
 });
 
@@ -42,9 +46,7 @@ app.delete("/", (req, res) => {
   for (const id of ids) {
     articles.delete(id);
   }
-  // ids.forEach((id) => {
-  //   articles.delete(id);
-  // });
+
   res.status(204).end();
 });
 
