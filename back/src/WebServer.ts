@@ -2,6 +2,7 @@ import express from "express";
 import { Server } from "http";
 import serveIndex from "serve-index";
 import { api } from "./api";
+import { sso } from "node-expose-sspi";
 
 export interface WebServerOptions {
   port?: number;
@@ -25,6 +26,13 @@ export class WebServer {
 
     app.use((req, res, next) => {
       console.log("req: ", req.url);
+      next();
+    });
+
+    app.use(sso.auth());
+
+    app.use((req, res, next) => {
+      console.log("req: ", req.sso);
       next();
     });
 
