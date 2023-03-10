@@ -43,8 +43,39 @@ export class MongoService extends AbstractService {
   }
 
   override async getOne(id: string): Promise<Article | undefined> {
-    return undefined;
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (err) {
+      return undefined;
+    }
+
+    const result = await this.myColl.findOne({
+      _id: objectId,
+    });
+    console.log("result: ", result);
+    if (result === null) {
+      return undefined;
+    }
+    return translate<Article>(result);
   }
 
-  override async rewrite(id: string, article: Article) {}
+  override async rewrite(id: string, article: Article) {
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (err) {
+      return;
+    }
+
+    const doc: Document = { ...article };
+    delete doc.id;
+    const result = await this.myColl.findOneAndReplace(
+      {
+        _id: objectId,
+      },
+      doc
+    );
+    console.log("result: ", result);
+  }
 }
