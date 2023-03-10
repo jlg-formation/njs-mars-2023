@@ -5,9 +5,10 @@ import {
   newArticleSchema,
   partialArticleSchema,
 } from "./schemas/article.schema";
+import { MongoService } from "./services/MongoService";
 import { RAMService } from "./services/RAMService";
 
-const service = new RAMService();
+const service = new MongoService();
 
 const app = Router();
 

@@ -1,31 +1,34 @@
+import { Collection, Document, MongoClient } from "mongodb";
 import { Article, NewArticle } from "../interfaces/article";
-import { generateId } from "../misc";
+import { AbstractService } from "./AbstractService";
 
-export class MongoService {
-  articles = new Map<string, Article>();
-
-  create(newArticle: NewArticle) {
-    const article = { ...newArticle, id: generateId() };
-    this.articles.set(article.id, article);
+export class MongoService extends AbstractService {
+  myColl: Collection<Document>;
+  constructor() {
+    super();
+    const uri = "mongodb://127.0.0.1:27017";
+    const client = new MongoClient(uri);
+    const myDB = client.db("gestion-stock");
+    this.myColl = myDB.collection("articles");
   }
 
-  deleteAll() {
-    this.articles.clear();
+  override async create(newArticle: NewArticle) {
+    await this.myColl.insertOne(newArticle);
   }
 
-  deleteOne(id: string) {
-    return this.articles.delete(id);
+  override async deleteAll() {}
+
+  override async deleteOne(id: string) {
+    return true;
   }
 
-  getAll() {
-    return this.articles;
+  override async getAll() {
+    return [];
   }
 
-  getOne(id: string) {
-    return this.articles.get(id);
+  override async getOne(id: string): Promise<Article | undefined> {
+    return undefined;
   }
 
-  rewrite(id: string, article: Article) {
-    this.articles.set(id, article);
-  }
+  override async rewrite(id: string, article: Article) {}
 }
