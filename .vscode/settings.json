@@ -1,3 +1,11 @@
 {
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "surround.custom": {
+    "asyncArrowIIFE": {
+      "label": "Async IIFE",
+      "description": "(async () => {...})()",
+      "snippet": "(async () => {\n\t$TM_SELECTED_TEXT\n})();$0", // <-- snippet goes here.
+      "languageIds": ["javascript", "typescript", "typescriptreact"]
+    }
+  }
 }
