@@ -1,4 +1,4 @@
-import { Collection, Document, MongoClient } from "mongodb";
+import { Collection, Document, MongoClient, ObjectId } from "mongodb";
 import { Article, NewArticle } from "../interfaces/article";
 import { AbstractService } from "./AbstractService";
 
@@ -16,10 +16,23 @@ export class MongoService extends AbstractService {
     await this.myColl.insertOne(newArticle);
   }
 
-  override async deleteAll() {}
+  override async deleteAll() {
+    await this.myColl.deleteMany();
+  }
 
   override async deleteOne(id: string) {
-    return true;
+    let objectId;
+    try {
+      objectId = new ObjectId(id);
+    } catch (err) {
+      return false;
+    }
+
+    const result = await this.myColl.deleteOne({
+      _id: objectId,
+    });
+    console.log("result: ", result);
+    return result.deletedCount > 0;
   }
 
   override async getAll() {
