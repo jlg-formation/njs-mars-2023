@@ -1,21 +1,30 @@
 import express from "express";
-import { Server } from "http";
+import { createServer, Server } from "http";
+import https from "https";
 import serveIndex from "serve-index";
 import { api } from "./api";
 import { sso } from "node-expose-sspi";
+import fs from "node:fs";
 
 export interface WebServerOptions {
-  port?: number;
+  port: number;
+  httpsPort: number;
+  privateKeyFilename: string;
+  certificateFilename: string;
 }
 
 export class WebServer {
   options: WebServerOptions = {
     port: 6666,
+    httpsPort: 443,
+    privateKeyFilename: "string",
+    certificateFilename: "string",
   };
   app = express();
-  server: Server | undefined;
+  server: Server;
+  httpsServer: https.Server;
 
-  constructor(opts?: WebServerOptions) {
+  constructor(opts?: Partial<WebServerOptions>) {
     this.options = { ...this.options, ...opts };
 
     console.log("About to start the server...");
@@ -23,6 +32,16 @@ export class WebServer {
     const publicDir = ".";
 
     const app = this.app;
+
+    this.server = createServer(app);
+
+    const privateKey = fs.readFileSync(this.options.privateKeyFilename, "utf8");
+    const certificate = fs.readFileSync(
+      this.options.certificateFilename,
+      "utf8"
+    );
+    const credentials = { key: privateKey, cert: certificate };
+    this.httpsServer = https.createServer(credentials, app);
 
     app.use((req, res, next) => {
       console.log("req: ", req.url);
@@ -47,14 +66,28 @@ export class WebServer {
       const callback = (err: unknown) => {
         reject(err instanceof Error ? err : new Error(err as string));
       };
-      const server = this.app.listen(this.options.port, () => {
+      this.server.listen(this.options.port, () => {
         console.log(`Example app listening on port ${this.options.port}`);
-        server.off("error", callback);
+        this.server.off("error", callback);
         resolve();
       });
 
-      server.once("error", callback);
-      this.server = server;
+      this.server.once("error", callback);
+    });
+  }
+
+  startHttps() {
+    return new Promise<void>((resolve, reject) => {
+      const callback = (err: unknown) => {
+        reject(err instanceof Error ? err : new Error(err as string));
+      };
+      this.httpsServer.listen(this.options.httpsPort, () => {
+        console.log(`Example app listening on port ${this.options.httpsPort}`);
+        this.httpsServer.off("error", callback);
+        resolve();
+      });
+
+      this.httpsServer.once("error", callback);
     });
   }
 
@@ -65,6 +98,22 @@ export class WebServer {
         return;
       }
       this.server.close((err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    });
+  }
+
+  stopHttps() {
+    return new Promise<void>((resolve, reject) => {
+      if (this.httpsServer === undefined) {
+        resolve();
+        return;
+      }
+      this.httpsServer.close((err) => {
         if (err) {
           reject(err);
           return;
