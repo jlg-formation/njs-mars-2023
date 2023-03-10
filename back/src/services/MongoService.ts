@@ -1,6 +1,7 @@
 import { Collection, Document, MongoClient, ObjectId } from "mongodb";
 import { Article, NewArticle } from "../interfaces/article";
 import { AbstractService } from "./AbstractService";
+import { translate } from "./mongo/misc";
 
 export class MongoService extends AbstractService {
   myColl: Collection<Document>;
@@ -36,7 +37,9 @@ export class MongoService extends AbstractService {
   }
 
   override async getAll() {
-    return [];
+    const result = await this.myColl.find().toArray();
+    console.log("result: ", result);
+    return result.map((doc) => translate<Article>(doc));
   }
 
   override async getOne(id: string): Promise<Article | undefined> {
